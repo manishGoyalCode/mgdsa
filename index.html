@@ -24,6 +24,64 @@
             </div>
         </header>
 
+        <section class="detailed-stats">
+            <div class="stats-grid">
+                <!-- Difficulty Stats -->
+                <div class="stats-section">
+                    <h3>Difficulty Breakdown</h3>
+                    <div class="difficulty-stats">
+                        <div class="difficulty-stat easy" data-difficulty="Easy">
+                            <div class="stat-header">
+                                <span class="difficulty-label">Easy</span>
+                                <span class="difficulty-count" id="home-easy-count">0/0</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress" id="home-easy-progress"></div>
+                            </div>
+                            <div class="stat-details">
+                                <span id="home-easy-completion">0%</span>
+                                <span class="click-hint">Click to filter</span>
+                            </div>
+                        </div>
+                        <div class="difficulty-stat medium" data-difficulty="Medium">
+                            <div class="stat-header">
+                                <span class="difficulty-label">Medium</span>
+                                <span class="difficulty-count" id="home-medium-count">0/0</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress" id="home-medium-progress"></div>
+                            </div>
+                            <div class="stat-details">
+                                <span id="home-medium-completion">0%</span>
+                                <span class="click-hint">Click to filter</span>
+                            </div>
+                        </div>
+                        <div class="difficulty-stat hard" data-difficulty="Hard">
+                            <div class="stat-header">
+                                <span class="difficulty-label">Hard</span>
+                                <span class="difficulty-count" id="home-hard-count">0/0</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress" id="home-hard-progress"></div>
+                            </div>
+                            <div class="stat-details">
+                                <span id="home-hard-completion">0%</span>
+                                <span class="click-hint">Click to filter</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Topic Stats -->
+                <div class="stats-section">
+                    <h3>Topic Coverage</h3>
+                    <div class="topic-stats" id="home-topic-stats">
+                        <!-- Topic stats will be dynamically added here -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <section class="controls">
             <div class="filters">
                 <select id="topic-filter">
@@ -42,8 +100,9 @@
                 </select>
             </div>
             <div class="button-group">
-                <button id="add-question-btn" class="btn">Add New Question</button>
-                <button id="reset-btn" class="btn btn-danger">Reset Progress</button>
+                <button id="add-question-btn" class="btn">Add Question</button>
+                <button id="analytics-btn" class="btn">View Analytics</button>
+                <button id="reset-btn" class="btn btn-danger">Reset</button>
             </div>
         </section>
 
@@ -92,8 +151,169 @@
                 </form>
             </div>
         </div>
+
+        <!-- Modal for notes and solutions -->
+        <div id="notes-modal" class="modal">
+            <div class="modal-content">
+                <h2>Notes & Solution</h2>
+                <div class="notes-header">
+                    <h3 id="notes-question-title"></h3>
+                    <span id="notes-last-modified"></span>
+                </div>
+                <form id="notes-form">
+                    <div class="form-group">
+                        <label for="question-notes">Notes:</label>
+                        <textarea id="question-notes" rows="4" placeholder="Add your notes, concepts, and approach..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="question-solution">Solution:</label>
+                        <textarea id="question-solution" rows="8" placeholder="Add your solution code here..."></textarea>
+                    </div>
+                    <div class="complexity-group">
+                        <div class="form-group">
+                            <label for="time-complexity">Time Complexity:</label>
+                            <input type="text" id="time-complexity" placeholder="e.g., O(n)">
+                        </div>
+                        <div class="form-group">
+                            <label for="space-complexity">Space Complexity:</label>
+                            <input type="text" id="space-complexity" placeholder="e.g., O(1)">
+                        </div>
+                    </div>
+                    <div class="form-buttons">
+                        <button type="submit" class="btn">Save Notes</button>
+                        <button type="button" class="btn btn-secondary" id="close-notes-modal">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Analytics Modal -->
+        <div id="analytics-modal" class="modal">
+            <div class="modal-content analytics-content">
+                <div class="analytics-header">
+                    <h2>Progress Analytics</h2>
+                    <button id="close-analytics-modal" class="close-btn">×</button>
+                </div>
+                
+                <div class="analytics-grid">
+                    <!-- Summary Cards -->
+                    <div class="analytics-card summary-card">
+                        <h3>Overall Progress</h3>
+                        <div class="stat-grid">
+                            <div class="stat-item">
+                                <span class="stat-label">Completion Rate</span>
+                                <span id="completion-rate" class="stat-value">0%</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Questions Solved</span>
+                                <span id="questions-solved" class="stat-value">0/0</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">In Progress</span>
+                                <span id="in-progress-count" class="stat-value">0</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Difficulty Distribution -->
+                    <div class="analytics-card">
+                        <h3>Difficulty Distribution</h3>
+                        <div id="difficulty-chart" class="chart-container"></div>
+                        <div class="difficulty-stats">
+                            <div class="difficulty-stat easy">
+                                <div class="stat-header">
+                                    <span class="difficulty-label">Easy</span>
+                                    <span class="difficulty-count" id="easy-count">0/0</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress" id="easy-progress"></div>
+                                </div>
+                                <div class="stat-details">
+                                    <span id="easy-completion">0%</span>
+                                    <span id="easy-time">Avg: 0 min</span>
+                                </div>
+                            </div>
+                            <div class="difficulty-stat medium">
+                                <div class="stat-header">
+                                    <span class="difficulty-label">Medium</span>
+                                    <span class="difficulty-count" id="medium-count">0/0</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress" id="medium-progress"></div>
+                                </div>
+                                <div class="stat-details">
+                                    <span id="medium-completion">0%</span>
+                                    <span id="medium-time">Avg: 0 min</span>
+                                </div>
+                            </div>
+                            <div class="difficulty-stat hard">
+                                <div class="stat-header">
+                                    <span class="difficulty-label">Hard</span>
+                                    <span class="difficulty-count" id="hard-count">0/0</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress" id="hard-progress"></div>
+                                </div>
+                                <div class="stat-details">
+                                    <span id="hard-completion">0%</span>
+                                    <span id="hard-time">Avg: 0 min</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Difficulty Trends -->
+                    <div class="analytics-card">
+                        <h3>Difficulty Trends</h3>
+                        <div id="difficulty-trends-chart" class="chart-container"></div>
+                        <div class="difficulty-insights">
+                            <div class="insight-card" id="strongest-difficulty">
+                                <h4>Strongest At</h4>
+                                <p>Loading...</p>
+                            </div>
+                            <div class="insight-card" id="needs-improvement">
+                                <h4>Needs Improvement</h4>
+                                <p>Loading...</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Topic Progress -->
+                    <div class="analytics-card">
+                        <h3>Topic-wise Progress</h3>
+                        <div id="topic-chart" class="chart-container"></div>
+                    </div>
+
+                    <!-- Recent Activity -->
+                    <div class="analytics-card">
+                        <h3>Recent Activity</h3>
+                        <div id="activity-timeline" class="timeline">
+                            <!-- Activity items will be added here dynamically -->
+                        </div>
+                    </div>
+
+                    <!-- Study Streak -->
+                    <div class="analytics-card">
+                        <h3>Study Streak</h3>
+                        <div class="streak-container">
+                            <div id="streak-count" class="streak-number">0</div>
+                            <div class="streak-label">Days</div>
+                            <div id="streak-calendar" class="streak-calendar"></div>
+                        </div>
+                    </div>
+
+                    <!-- Pace Analysis -->
+                    <div class="analytics-card">
+                        <h3>Learning Pace</h3>
+                        <div id="pace-chart" class="chart-container"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="data.js"></script>
+    <script src="analytics.js"></script>
     <script src="app.js"></script>
 </body>
 </html> 
