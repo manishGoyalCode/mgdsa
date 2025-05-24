@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DSA Questions Tracker</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>DSA Questions Tracker</h1>
+            <div class="progress-summary">
+                <div class="overall-progress">
+                    <h3>Overall Progress</h3>
+                    <div class="progress-bar">
+                        <div class="progress" id="overall-progress-bar"></div>
+                    </div>
+                    <span id="overall-progress-text">0/0 (0%)</span>
+                </div>
+                <div class="topic-progress" id="topic-progress">
+                    <!-- Topic-wise progress will be inserted here -->
+                </div>
+            </div>
+        </header>
+
+        <section class="controls">
+            <div class="filters">
+                <select id="topic-filter">
+                    <option value="all">All Topics</option>
+                </select>
+                <select id="difficulty-filter">
+                    <option value="all">All Difficulties</option>
+                    <option value="Easy">Easy</option>
+                    <option value="Medium">Medium</option>
+                    <option value="Hard">Hard</option>
+                </select>
+                <select id="sort-by">
+                    <option value="topic">Sort by Topic</option>
+                    <option value="difficulty">Sort by Difficulty</option>
+                    <option value="status">Sort by Status</option>
+                </select>
+            </div>
+            <div class="button-group">
+                <button id="add-question-btn" class="btn">Add New Question</button>
+                <button id="reset-btn" class="btn btn-danger">Reset Progress</button>
+            </div>
+        </section>
+
+        <main>
+            <div class="questions-list" id="questions-list">
+                <!-- Questions will be inserted here -->
+            </div>
+        </main>
+
+        <!-- Modal for adding new questions -->
+        <div id="add-question-modal" class="modal">
+            <div class="modal-content">
+                <h2>Add New Question</h2>
+                <form id="add-question-form">
+                    <div class="form-group">
+                        <label for="question-title">Title:</label>
+                        <input type="text" id="question-title" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="question-link">Question Link:</label>
+                        <input type="url" id="question-link" placeholder="https://leetcode.com/problems/...">
+                    </div>
+                    <div class="form-group">
+                        <label for="question-topic">Topic:</label>
+                        <select id="question-topic" required>
+                            <option value="Arrays">Arrays</option>
+                            <option value="Trees">Trees</option>
+                            <option value="Graphs">Graphs</option>
+                            <option value="Dynamic Programming">Dynamic Programming</option>
+                            <option value="Strings">Strings</option>
+                            <option value="Linked Lists">Linked Lists</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="question-difficulty">Difficulty:</label>
+                        <select id="question-difficulty" required>
+                            <option value="Easy">Easy</option>
+                            <option value="Medium">Medium</option>
+                            <option value="Hard">Hard</option>
+                        </select>
+                    </div>
+                    <div class="form-buttons">
+                        <button type="submit" class="btn">Add Question</button>
+                        <button type="button" class="btn btn-secondary" id="close-modal">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+</body>
+</html> 
