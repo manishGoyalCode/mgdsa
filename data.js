@@ -1,201 +1,21 @@
-// Initial questions data
-const initialQuestions = [
-    {
-        id: 1,
-        title: "Two Sum",
-        topic: "Arrays",
-        difficulty: "Easy",
-        status: "Not Started",
-        link: "https://leetcode.com/problems/two-sum/",
-        notes: "",
-        solution: "",
-        timeComplexity: "",
-        spaceComplexity: "",
-        lastModified: null
-    },
-    {
-        id: 2,
-        title: "Binary Tree Level Order Traversal",
-        topic: "Trees",
-        difficulty: "Medium",
-        status: "Not Started",
-        link: "https://leetcode.com/problems/binary-tree-level-order-traversal/",
-        notes: "",
-        solution: "",
-        timeComplexity: "",
-        spaceComplexity: "",
-        lastModified: null
-    },
-    {
-        id: 3,
-        title: "Shortest Path in Graph",
-        topic: "Graphs",
-        difficulty: "Hard",
-        status: "Not Started",
-        link: "https://leetcode.com/problems/shortest-path-in-binary-matrix/",
-        notes: "",
-        solution: "",
-        timeComplexity: "",
-        spaceComplexity: "",
-        lastModified: null
-    },
-    {
-        id: 4,
-        title: "Longest Common Subsequence",
-        topic: "Dynamic Programming",
-        difficulty: "Medium",
-        status: "Not Started",
-        link: "https://leetcode.com/problems/longest-common-subsequence/",
-        notes: "",
-        solution: "",
-        timeComplexity: "",
-        spaceComplexity: "",
-        lastModified: null
-    },
-    {
-        id: 5,
-        title: "Valid Parentheses",
-        topic: "Strings",
-        difficulty: "Easy",
-        status: "Not Started",
-        link: "https://leetcode.com/problems/valid-parentheses/",
-        notes: "",
-        solution: "",
-        timeComplexity: "",
-        spaceComplexity: "",
-        lastModified: null
-    },
-    {
-        id: 6,
-        title: "Merge K Sorted Lists",
-        topic: "Linked Lists",
-        difficulty: "Hard",
-        status: "Not Started",
-        link: "https://leetcode.com/problems/merge-k-sorted-lists/",
-        notes: "",
-        solution: "",
-        timeComplexity: "",
-        spaceComplexity: "",
-        lastModified: null
-    },
-    {
-        id: 7,
-        title: "Maximum Subarray",
-        topic: "Arrays",
-        difficulty: "Easy",
-        status: "Not Started",
-        link: "https://leetcode.com/problems/maximum-subarray/",
-        notes: "",
-        solution: "",
-        timeComplexity: "",
-        spaceComplexity: "",
-        lastModified: null
-    },
-    {
-        id: 8,
-        title: "Binary Tree Maximum Path Sum",
-        topic: "Trees",
-        difficulty: "Hard",
-        status: "Not Started",
-        link: "https://leetcode.com/problems/binary-tree-maximum-path-sum/",
-        notes: "",
-        solution: "",
-        timeComplexity: "",
-        spaceComplexity: "",
-        lastModified: null
-    },
-    {
-        id: 9,
-        title: "Course Schedule",
-        topic: "Graphs",
-        difficulty: "Medium",
-        status: "Not Started",
-        link: "https://leetcode.com/problems/course-schedule/",
-        notes: "",
-        solution: "",
-        timeComplexity: "",
-        spaceComplexity: "",
-        lastModified: null
-    },
-    {
-        id: 10,
-        title: "Coin Change",
-        topic: "Dynamic Programming",
-        difficulty: "Medium",
-        status: "Not Started",
-        link: "https://leetcode.com/problems/coin-change/",
-        notes: "",
-        solution: "",
-        timeComplexity: "",
-        spaceComplexity: "",
-        lastModified: null
-    },
-    {
-        id: 11,
-        title: "Reverse Linked List",
-        topic: "Linked Lists",
-        difficulty: "Easy",
-        status: "Not Started",
-        link: "https://leetcode.com/problems/reverse-linked-list/",
-        notes: "",
-        solution: "",
-        timeComplexity: "",
-        spaceComplexity: "",
-        lastModified: null
-    },
-    {
-        id: 12,
-        title: "Word Break",
-        topic: "Dynamic Programming",
-        difficulty: "Medium",
-        status: "Not Started",
-        link: "https://leetcode.com/problems/word-break/",
-        notes: "",
-        solution: "",
-        timeComplexity: "",
-        spaceComplexity: "",
-        lastModified: null
-    },
-    {
-        id: 13,
-        title: "Longest Palindromic Substring",
-        topic: "Strings",
-        difficulty: "Medium",
-        status: "Not Started",
-        link: "https://leetcode.com/problems/longest-palindromic-substring/",
-        notes: "",
-        solution: "",
-        timeComplexity: "",
-        spaceComplexity: "",
-        lastModified: null
-    },
-    {
-        id: 14,
-        title: "Merge Intervals",
-        topic: "Arrays",
-        difficulty: "Medium",
-        status: "Not Started",
-        link: "https://leetcode.com/problems/merge-intervals/",
-        notes: "",
-        solution: "",
-        timeComplexity: "",
-        spaceComplexity: "",
-        lastModified: null
-    },
-    {
-        id: 15,
-        title: "Serialize and Deserialize Binary Tree",
-        topic: "Trees",
-        difficulty: "Hard",
-        status: "Not Started",
-        link: "https://leetcode.com/problems/serialize-and-deserialize-binary-tree/",
-        notes: "",
-        solution: "",
-        timeComplexity: "",
-        spaceComplexity: "",
-        lastModified: null
+// Import questions from JSON file
+let initialQuestions = [];
+
+// Fetch questions from JSON file
+async function fetchInitialQuestions() {
+    try {
+        const response = await fetch('questions.json');
+        if (!response.ok) {
+            throw new Error('Failed to load questions');
+        }
+        const data = await response.json();
+        initialQuestions = data.initialQuestions;
+    } catch (error) {
+        console.error('Error loading questions from JSON:', error);
+        // Fallback to empty array if JSON load fails
+        initialQuestions = [];
     }
-];
+}
 
 // Create a namespace for our DSA tracker
 window.DSATracker = {
@@ -203,9 +23,18 @@ window.DSATracker = {
     STORAGE_KEY: 'dsa_questions',
     
     // Initialize questions from storage or default data
-    init() {
+    async init() {
+        // First try to load from localStorage
         const storedQuestions = localStorage.getItem(this.STORAGE_KEY);
-        this.questions = storedQuestions ? JSON.parse(storedQuestions) : initialQuestions;
+        if (storedQuestions) {
+            this.questions = JSON.parse(storedQuestions);
+            return;
+        }
+
+        // If no stored questions, load from JSON file
+        await fetchInitialQuestions();
+        this.questions = [...initialQuestions];
+        this.saveToLocalStorage();
     },
     
     // Get unique topics from questions
@@ -293,7 +122,9 @@ window.DSATracker = {
     },
     
     // Reset to initial questions
-    resetQuestions() {
+    async resetQuestions() {
+        // Ensure we have the latest initial questions
+        await fetchInitialQuestions();
         this.questions = [...initialQuestions];
         this.saveToLocalStorage();
         return this.questions;
@@ -342,4 +173,6 @@ window.DSATracker = {
 };
 
 // Initialize the tracker
-DSATracker.init(); 
+(async () => {
+    await DSATracker.init();
+})(); 

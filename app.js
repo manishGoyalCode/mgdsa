@@ -24,15 +24,12 @@ const spaceComplexity = document.getElementById('space-complexity');
 let currentQuestionId = null;
 
 // Initialize the application
-function init() {
-    // Populate topic filter with unique topics
-    const topics = DSATracker.getUniqueTopics();
-    topics.forEach(topic => {
-        const option = document.createElement('option');
-        option.value = topic;
-        option.textContent = topic;
-        topicFilter.appendChild(option);
-    });
+async function init() {
+    // Wait for DSATracker to initialize
+    await DSATracker.init();
+    
+    // Update topic filter
+    updateTopicFilter();
 
     // Add event listeners
     topicFilter.addEventListener('change', updateQuestionsList);
@@ -54,6 +51,24 @@ function init() {
     // Initial render
     updateQuestionsList();
     updateProgress();
+}
+
+// Update topic filter dropdown
+function updateTopicFilter() {
+    const topics = DSATracker.getUniqueTopics();
+    
+    // Clear existing options except "All Topics"
+    while (topicFilter.options.length > 1) {
+        topicFilter.remove(1);
+    }
+    
+    // Add new options
+    topics.forEach(topic => {
+        const option = document.createElement('option');
+        option.value = topic;
+        option.textContent = topic;
+        topicFilter.appendChild(option);
+    });
 }
 
 // Render questions list
@@ -315,52 +330,35 @@ function showToast(message, type = 'success') {
 }
 
 // Handle adding a new question
-function handleAddQuestion(e) {
+async function handleAddQuestion(e) {
     e.preventDefault();
     
     const newQuestion = {
         title: document.getElementById('question-title').value,
+        link: document.getElementById('question-link').value,
         topic: document.getElementById('question-topic').value,
-        difficulty: document.getElementById('question-difficulty').value,
-        link: document.getElementById('question-link').value.trim()
+        difficulty: document.getElementById('question-difficulty').value
     };
     
-    try {
-        const addedQuestion = DSATracker.addQuestion(newQuestion);
-        addQuestionModal.classList.remove('active');
-        e.target.reset();
-        
-        updateQuestionsList();
-        updateProgress();
-        showToast('Question added successfully');
-
-        // Find and highlight the new question
-        setTimeout(() => {
-            const newCard = document.querySelector(`[data-id="${addedQuestion.id}"]`);
-            if (newCard) {
-                newCard.classList.add('new');
-                setTimeout(() => newCard.classList.remove('new'), 2000);
-                newCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            }
-        }, 100);
-    } catch (error) {
-        showToast('Failed to add question', 'error');
-        console.error('Error adding question:', error);
-    }
+    DSATracker.addQuestion(newQuestion);
+    updateTopicFilter();
+    updateQuestionsList();
+    updateProgress();
+    
+    // Reset form and close modal
+    e.target.reset();
+    addQuestionModal.classList.remove('active');
+    showToast('Question added successfully');
 }
 
 // Handle reset
-function handleReset() {
-    if (confirm('Are you sure you want to reset all questions to their initial state? This action cannot be undone.')) {
-        try {
-            DSATracker.resetQuestions();
-            updateQuestionsList();
-            updateProgress();
-            showToast('Questions reset successfully');
-        } catch (error) {
-            showToast('Failed to reset questions', 'error');
-            console.error('Error resetting questions:', error);
-        }
+async function handleReset() {
+    if (confirm('Are you sure you want to reset all progress? This cannot be undone.')) {
+        await DSATracker.resetQuestions();
+        updateTopicFilter();
+        updateQuestionsList();
+        updateProgress();
+        showToast('Progress reset successfully');
     }
 }
 
